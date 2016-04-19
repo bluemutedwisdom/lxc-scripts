@@ -1,7 +1,6 @@
 # do daily/weekly/monthly maintenance
 # min	hour	day	month	weekday	command
-*/5	*	*	*	*	bash /opt/scripts/dynamic-inv.sh
-
+*/5	*	*	*	*	run-parts /etc/periodic/5min
 */15	*	*	*	*	run-parts /etc/periodic/15min
 0	*	*	*	*	run-parts /etc/periodic/hourly
 0	2	*	*	*	run-parts /etc/periodic/daily
