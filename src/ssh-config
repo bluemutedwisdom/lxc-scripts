@@ -1,0 +1,7 @@
+Host IP
+    StrictHostKeyChecking no
+    UserKnownHostsFile=/dev/null
+
+Host localhost
+    StrictHostKeyChecking no
+    UserKnownHostsFile=/dev/null
