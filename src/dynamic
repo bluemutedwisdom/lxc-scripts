@@ -1,4 +1,4 @@
 #!/bin/bash
 
-echo "[lxc-servers]" > dynamic-hosts
-nmap -sP IP | grep report | awk '{print $5}' | grep -v \.1$ >> dynamic-hosts
+echo "[lxc-servers]" > /root/dynamic-hosts
+nmap -sP IP | grep report | awk '{print $5}' | grep -v \.1$ >> /root/dynamic-hosts
