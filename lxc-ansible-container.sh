@@ -2,7 +2,7 @@
 
 # file    : lxc-ansible-container.sh
 # purpose : this script will create a ansible management server in a lxc container
-# requires: ssh-config
+# requires: ssh-config, dynamic-inv.sh
 #
 # author  : harald van der laan
 # version : v1.0
