@@ -99,17 +99,11 @@ echo "[+]: openssh is configured"
 echo "[ ]: correcting system configuration"
 lxc exec ${lxcContainerName} -- sed -i 's/\/bin\/ash/\/bin\/bash/g' /etc/passwd 
 if [ -f src/ssh-config ]; then
-	cat src/ssh-config | sed -e "s/IP/$(ip addr show lxdbr0 | grep inet\ | awk '{print $2}' |cut -d"." -f1,2,3).*/g" > config
-	lxc file push config ${lxcContainerName}/root/.ssh/config --uid=0 --gid=0 --mode=0644
-	rm config
-fi
-if [ -f src/crontab ]; then
-	lxc file push src/crontab ${lxcContainerName}/etc/crontabs/root --uid=0 --gid=0 --mode=0600
+	lxc file push src/ssh-config ${lxcContainerName}/root/.ssh/config --uid=0 --gid=0 --mode=0644
 fi
 if [ -f src/dynamic ]; then
 	cat src/dynamic | sed -e "s/IP/$(ip addr show lxdbr0 | grep inet\ | awk '{print $2}' |cut -d"." -f1,2,3).0\/24/g" > dynamic-inv.sh
-	lxc exec ${lxcContainerName} -- mkdir -p /etc/periodic/5min
-	lxc file push dynamic-inv.sh ${lxcContainerName}/etc/periodic/5min/dynamic-inv.sh --uid=0 --gid=0 --mode=0700
+	lxc file push dynamic-inv.sh ${lxcContainerName}/root/dynamic-inv.sh --uid=0 --gid=0 --mode=0700
 	rm dynamic-inv.sh
 fi
 

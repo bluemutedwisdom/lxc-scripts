@@ -1,7 +1,3 @@
-Host IP
-    StrictHostKeyChecking no
-    UserKnownHostsFile=/dev/null
-
-Host localhost
+Host *
     StrictHostKeyChecking no
     UserKnownHostsFile=/dev/null
