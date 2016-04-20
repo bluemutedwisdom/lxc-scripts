@@ -111,6 +111,7 @@ if [ -f src/dynamic ]; then
 		lxc exec ${lxcContainerName} -- mkdir -p /etc/periodic/5min
 		cat src/dynamic | sed -e "s/IP/$(ip addr show lxdbr0 | grep inet\ | awk '{print $2}' |cut -d"." -f1,2,3).0\/24/g" > dynamic-inv.sh
 		lxc file push dynamic-inv.sh ${lxcContainerName}/etc/periodic/5min/dynamic-inv --uid=0 --gid=0 --mode=0755
+		lxc exec ${lxcContainerName} -- /etc/init.d/cron restart &> /dev/null
 	else
 		cat src/dynamic | sed -e "s/IP/$(ip addr show lxdbr0 | grep inet\ | awk '{print $2}' |cut -d"." -f1,2,3).0\/24/g" > dynamic-inv.sh
 		lxc file push dynamic-inv.sh ${lxcContainerName}/root/dynamic-inv.sh --uid=0 --gid=0 --mode=0700
