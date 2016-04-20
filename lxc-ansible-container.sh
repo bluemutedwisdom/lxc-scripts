@@ -102,8 +102,15 @@ if [ -f src/ssh-config ]; then
 	lxc file push src/ssh-config ${lxcContainerName}/root/.ssh/config --uid=0 --gid=0 --mode=0644
 fi
 if [ -f src/dynamic ]; then
-	cat src/dynamic | sed -e "s/IP/$(ip addr show lxdbr0 | grep inet\ | awk '{print $2}' |cut -d"." -f1,2,3).0\/24/g" > dynamic-inv.sh
-	lxc file push dynamic-inv.sh ${lxcContainerName}/root/dynamic-inv.sh --uid=0 --gid=0 --mode=0700
+	if [ -f src/crontab ]; then
+		lxc file push src/crontab ${lxcContainerName}/etc/crontabs/root --uid=0 --gid=0 --mode=0600
+		lxc exec ${lxcContainerName} -- mkdir -p /etc/periodic/5min
+		cat src/dynamic | sed -e "s/IP/$(ip addr show lxdbr0 | grep inet\ | awk '{print $2}' |cut -d"." -f1,2,3).0\/24/g" > dynamic-inv.sh
+		lxc file push dynamic-inv.sh ${lxcContainerName}/etc/periodic/5min/dynamic-inv --uid=0 --gid=0 --mode=0755
+	else
+		cat src/dynamic | sed -e "s/IP/$(ip addr show lxdbr0 | grep inet\ | awk '{print $2}' |cut -d"." -f1,2,3).0\/24/g" > dynamic-inv.sh
+		lxc file push dynamic-inv.sh ${lxcContainerName}/root/dynamic-inv.sh --uid=0 --gid=0 --mode=0700
+	fi
 	rm dynamic-inv.sh
 fi
 
