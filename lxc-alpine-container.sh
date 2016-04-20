@@ -5,8 +5,12 @@
 # requires: ssh-config
 #
 # author  : harald van der laan
-# version : v1.0
-# date    : 2016/04/19
+# version : v1.0.1
+# date    : 2016/04/20
+#
+# changelog:
+# - v1.0        initial version                                         (harald)
+# - v1.0.1      lots of small changes / bug fixes                       (harald)
 
 lxcContainerName=${1}
 lxcAnsibleContainer=${2}
