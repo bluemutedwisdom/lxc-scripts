@@ -79,8 +79,9 @@ lxc launch alpine ${lxcContainerName} &> /dev/null && \
 	echo -e "[${green}+${reset}]: clean alpine linux 3.3 started"
 
 echo "[ ]: update alpine linux 3.3 to latest patch level"
+sleep 3
 lxc exec ${lxcContainerName} -- apk update &> /dev/null && \
-lxc exec ${lxcContainerName} -- apk upgrade &> /dev/null && \
+	lxc exec ${lxcContainerName} -- apk upgrade &> /dev/null && \
 	echo -e "[${green}+${reset}]: alpine linux 3.3 up to latest patch level"
 
 echo "[ ]: installing requirements (this could take some time)"
