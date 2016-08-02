@@ -12,6 +12,7 @@
 # - v1.0        initial version                                         (harald)
 # - v1.0.1      lots of small changes / bug fixes                       (harald)
 # - v1.0.2	Added coloring to outout				(harald)
+# - v1.0.3	Changed update and upgrade procedure			(harald)
 
 lxcContainerName=${1}
 lxcAnsibleContainer=${2}
@@ -78,7 +79,8 @@ lxc launch alpine ${lxcContainerName} &> /dev/null && \
 	echo -e "[${green}+${reset}]: clean alpine linux 3.3 started"
 
 echo "[ ]: update alpine linux 3.3 to latest patch level"
-lxc exec ${lxcContainerName} -- apk --update-cache upgrade &> /dev/null && \
+lxc exec ${lxcContainerName} -- apk update &> /dev/null && \
+lxc exec ${lxcContainerName} -- apk upgrade &> /dev/null && \
 	echo -e "[${green}+${reset}]: alpine linux 3.3 up to latest patch level"
 
 echo "[ ]: installing requirements (this could take some time)"
