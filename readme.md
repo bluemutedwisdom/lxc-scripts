@@ -5,4 +5,5 @@ lxc-scripts is a set of scripts for creating an ansible server with alpine linux
 
     $ ./lxc-ansible-container <container name>
     $ ./lxc-alpine-container <container name> <ansible container>
+    $ ./lxc-ssh <container name>
 

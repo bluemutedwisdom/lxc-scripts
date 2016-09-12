@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# file    : lxc-ssh
+# purpose : login via ssh to a container with a dhcp ip addres by using the container name
+#
+# author  : harald van der laan
+# date    : 2016/09/12
+# version : v1.0.0
+#
+# changelog:
+# - v1.0.0	initial version								(harald)
+
+if [ -z ${1} ]; then
+	echo "[-] usage: ${0} <lxc container name>"
+	echo
+	echo "list of running containers:"
+	lxc list | grep RUNNING | akw '{print $2}'
+	exit 1
+fi
+
+containerIp=$(lxc list | grep ${1} | awl '{print $6}')
+
+if [ -z ${containerIp} ] || [ ${containerIp} = "|" ]; then
+	echo "[-]: container ${1} is not running or does not exist"
+	exit 1
+fi
+
+ssh -l root ${containerIp}
+
+exit 0
