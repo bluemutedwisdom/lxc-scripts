@@ -5,14 +5,15 @@
 # requires: ssh-config
 #
 # author  : harald van der laan
-# version : v1.0.2
-# date    : 2016/04/20
+# version : v1.0.4
+# date    : 2016/09/13
 #
 # changelog:
 # - v1.0        initial version                                         (harald)
 # - v1.0.1      lots of small changes / bug fixes                       (harald)
 # - v1.0.2	Added coloring to outout				(harald)
 # - v1.0.3	Changed update and upgrade procedure			(harald)
+# - v1.0.4	fixed issue with keypair when key is not there		(harald)
 
 lxcContainerName=${1}
 lxcAnsibleContainer=${2}
@@ -97,6 +98,7 @@ if [ ${lxcAnsibleContainerExists} -eq 0 ]; then
 	cat a > authorized_keys
         if [ ! -f ~/.ssh/id_rsa.pub ]; then
         	echo "[ ]: creating public and private key pair"
+		mkdir ~/.ssh
         	ssh-keygen -b 2048 -t rsa -f ~/.ssh/id_rsa -q -N ""
 	fi
 	cat ~/.ssh/id_rsa.pub >> authorized_keys
