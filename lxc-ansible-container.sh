@@ -5,12 +5,13 @@
 # requires: ssh-config, dynamic-inv.sh
 #
 # author  : harald van der laan
-# version : v1.0.1
+# version : v1.0.2
 # date    : 2016/04/20
 #
 # changelog:
 # - v1.0	initial version						(harald)
 # - v1.0.1	lots of small changes / bug fixes			(harald)
+# - v1.0.2	changed testing to community in repository		(harald)
 
 lxcContainerName=${1}
 lxcInstallYes="[yY][eE][sS]"
@@ -79,7 +80,7 @@ lxc exec ${lxcContainerName} -- pip install -U pip &> /dev/null && \
 	echo "[+]: python modules are installed"
 
 echo "[ ]: installing ansible"
-lxc exec ${lxcContainerName} -- apk --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ add ansible &> /dev/null && \
+lxc exec ${lxcContainerName} -- apk --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community/ add ansible &> /dev/null && \
 	echo "[+]: ansible installed"
 
 echo "[ ]: configurating openssh"
