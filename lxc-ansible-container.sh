@@ -5,13 +5,14 @@
 # requires: ssh-config, dynamic-inv.sh
 #
 # author  : harald van der laan
-# version : v1.0.2
-# date    : 2016/04/20
+# version : v1.0.3
+# date    : 2016/09/13
 #
 # changelog:
 # - v1.0	initial version						(harald)
 # - v1.0.1	lots of small changes / bug fixes			(harald)
 # - v1.0.2	changed testing to community in repository		(harald)
+# - v1.0.3	fixed create keypair when key is not there		(harald)
 
 lxcContainerName=${1}
 lxcInstallYes="[yY][eE][sS]"
@@ -92,6 +93,7 @@ lxc file pull ${lxcContainerName}/root/.ssh/id_rsa.pub a
 
 if [ ! -f ~/.ssh/id_rsa.pub ]; then
 	echo "[ ]: creating public and private key pair"
+	mkdir ~/.ssh
 	ssh-keygen -b 2048 -t rsa -f /root/.ssh/id_rsa -q -N ""
 fi
 
