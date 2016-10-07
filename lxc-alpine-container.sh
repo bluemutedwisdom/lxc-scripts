@@ -62,9 +62,9 @@ lxcAnsibleContainerExists=$(lxc list | egrep "^\|\ ${lxcAnsibleContainer}\ " &> 
 # the ansible management server will be based on alpine linux 3.3 (amd64)
 # this check will look for the alpine image local
 if [ ${lxcAlpineImage} -ne 0 ]; then
-	# alpine linux 3.3 image is not local
-	echo "[ ]: downloading alpine linux 3.3 lxc image"
-	lxc image copy images:alpine/3.3/amd64 local: --alias=alpine &> /dev/null && \ 
+	# alpine linux 3.4 image is not local
+	echo "[ ]: downloading alpine linux 3.4 lxc image"
+	lxc image copy images:alpine/3.4 local: --alias=alpine &> /dev/null && \ 
 		echo -e "[${green}+${reset}]: alpine linux 3.3 lxc image downloaded"
 fi
 
@@ -75,18 +75,18 @@ if [ ${lxcContainerExists} -eq 0 ]; then
 fi
 
 # main script
-echo "[ ]: starting clean alpine linux 3.3"
+echo "[ ]: starting clean alpine linux 3.4"
 lxc launch alpine ${lxcContainerName} &> /dev/null && \
-	echo -e "[${green}+${reset}]: clean alpine linux 3.3 started"
+	echo -e "[${green}+${reset}]: clean alpine linux 3.4 started"
 
-echo "[ ]: update alpine linux 3.3 to latest patch level"
+echo "[ ]: update alpine linux 3.4 to latest patch level"
 sleep 3
 lxc exec ${lxcContainerName} -- apk update &> /dev/null && \
 	lxc exec ${lxcContainerName} -- apk upgrade &> /dev/null && \
-	echo -e "[${green}+${reset}]: alpine linux 3.3 up to latest patch level"
+	echo -e "[${green}+${reset}]: alpine linux 3.4 up to latest patch level"
 
 echo "[ ]: installing requirements (this could take some time)"
-lxc exec ${lxcContainerName} -- apk add bash bash-completion python openssh &> /dev/null && \
+lxc exec ${lxcContainerName} -- apk add bash bash-completion python openssh vim &> /dev/null && \
 	echo -e "[${green}+${reset}]: requirements are installed"
 
 echo "[ ]: configurating openssh"
