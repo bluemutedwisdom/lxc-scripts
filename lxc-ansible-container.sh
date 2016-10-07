@@ -5,7 +5,7 @@
 # requires: ssh-config, dynamic-inv.sh
 #
 # author  : harald van der laan
-# version : v1.0.3
+# version : v1.1.0
 # date    : 2016/09/13
 #
 # changelog:
@@ -13,6 +13,8 @@
 # - v1.0.1	lots of small changes / bug fixes			(harald)
 # - v1.0.2	changed testing to community in repository		(harald)
 # - v1.0.3	fixed create keypair when key is not there		(harald)
+# - v1.1.0	added support for alpine linux 3.4 ansible was broken
+#		by /dev/shm						(harald)
 
 lxcContainerName=${1}
 lxcInstallYes="[yY][eE][sS]"
@@ -46,13 +48,13 @@ fi
 lxcAlpineImage=$(lxc image list | egrep "^\|\ alpine\ " &> /dev/null; echo ${?})
 lxcContainerExists=$(lxc list | egrep "^\|\ ${lxcContainerName}\ " &> /dev/null; echo ${?})
 
-# the ansible management server will be based on alpine linux 3.3 (amd64)
+# the ansible management server will be based on alpine linux  (amd64)
 # this check will look for the alpine image local
 if [ ${lxcAlpineImage} -ne 0 ]; then
-	# alpine linux 3.3 image is not local
-	echo "[ ]: downloading alpine linux 3.3 lxc image"
-	lxc image copy images:alpine/3.3/amd64 local: --alias=alpine &> /dev/null && \ 
-		echo "[+]: alpine linux 3.3 lxc image downloaded"
+	# alpine linux  image is not local
+	echo "[ ]: downloading alpine linux  lxc image"
+	lxc image copy images:alpine/3.4 local: --alias=alpine &> /dev/null && \ 
+		echo "[+]: alpine linux  lxc image downloaded"
 fi
 
 # check if there is no container running with the same name
@@ -62,13 +64,13 @@ if [ ${lxcContainerExists} -eq 0 ]; then
 fi
 
 # main script
-echo "[ ]: starting clean alpine linux 3.3"
+echo "[ ]: starting clean alpine linux "
 lxc launch alpine ${lxcContainerName} &> /dev/null && \
-	echo "[+]: clean alpine linux 3.3 started"
+	echo "[+]: clean alpine linux  started"
 
-echo "[ ]: update alpine linux 3.3 to latest patch level"
+echo "[ ]: update alpine linux  to latest patch level"
 lxc exec ${lxcContainerName} -- apk --update-cache upgrade &> /dev/null && \
-	echo "[+]: alpine linux 3.3 up to latest patch level"
+	echo "[+]: alpine linux  up to latest patch level"
 
 echo "[ ]: installing requirements (this could take some time)"
 lxc exec ${lxcContainerName} -- apk add bash bash-completion git vim python py-pip openssh nmap &> /dev/null && \
@@ -83,6 +85,12 @@ lxc exec ${lxcContainerName} -- pip install -U pip &> /dev/null && \
 echo "[ ]: installing ansible"
 lxc exec ${lxcContainerName} -- apk --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community/ add ansible &> /dev/null && \
 	echo "[+]: ansible installed"
+
+echo "[ ]: getting ansible data from bitbucket"
+lxc exec ${lxcContainerName} -- mkdir /opt
+lxc exec ${lxcContainerName} -- git clone https://hvanderlaan@bitbucket.org/hvanderlaan/ansible /opt/ansible
+lxc exec ${lxcContainerName} -- ln -s /opt/ansible
+echo "[+]: ansible data downloaded"
 
 echo "[ ]: configurating openssh"
 lxc exec ${lxcContainerName} -- rc-update add sshd &> /dev/null
@@ -123,6 +131,12 @@ if [ -f src/dynamic ]; then
 fi
 
 lxcAnsibleIpaddr=$(lxc list | egrep "^\|\ ${lxcContainerName}\ " | awk '{print $6}')
+echo "[ ]: correction of shared memory, this is missing"
+lxc exec ${lxcContainerName} -- mkdir -p /dev/shm
+lxc exec ${lxcContainerName} -- chmod 0777 /dev/shm
+lxc file push src/fstab ${lxcContainerName}/etc/fstab --uid=0 --gid=0 --mode=0644
+lxc exec ${lxcContainerName} -- mount /dev/shm
+echo "[+]: corrections made to shared memory"
 
 echo "[!]: ansible lxc container is ready"
 echo "[!]: login: ssh -l root ${lxcAnsibleIpaddr}"
