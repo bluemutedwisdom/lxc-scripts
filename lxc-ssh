@@ -18,7 +18,7 @@ if [ -z ${1} ]; then
 	exit 1
 fi
 
-containerIp=$(lxc list | grep ${1} | awl '{print $6}')
+containerIp=$(lxc list | grep ${1} | awk '{print $6}')
 
 if [ -z ${containerIp} ] || [ ${containerIp} = "|" ]; then
 	echo "[-]: container ${1} is not running or does not exist"
